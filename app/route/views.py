@@ -1,19 +1,34 @@
 #!/home/yaya/.pyenv/plugins/python
 #coding:utf-8
 from flask import session, render_template
-from app import app, redis_client
+from app import app, redis_client,db
 from app.model.user import User
 
 
 @app.route('/', methods=('GET','POST'))
 # @app.route('/index',me)
 def index():
-    # path = app.config['PATH']
-    redis_client.set('name','blog')
-    session['user'] = "marry"
-    redis_ = redis_client.get('name')
+    # path = app.config['PATH'] #get config  
+
+    redis_client.set('name','blog',60)  #key value expire
+    redis_ = redis_client.get('name')  #redis
     print(redis_)
-    user = {'nickname': session.get('user')}
+    
+    session['user'] = "marry"
+    user = {'nickname': session.get('user')} #session
+    
+    # if not User.query.filter(User.name=='mini').first():
+    use = User(
+        name = 'mini',
+        age = 20,
+        sex = 1,
+        email = 'root@root.com'
+    )   
+    db.session.add(use)
+    db.session.commit()          #flask_sqlalchemy
+
+    # query = db.session.query(User.id,User.name).filter(User.name=='mini') #sqlalchemy
+    # print(query[0])
     return render_template('index.html',user=user)
 
 
