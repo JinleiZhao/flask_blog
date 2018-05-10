@@ -30,6 +30,7 @@ def index():
     # query = db.session.query(User.id,User.name).filter(User.name=='mini') #sqlalchemy
     # print(query[0])
     return render_template('index.html',user=user)
+    # return render_template('upload_.html')
 
 
 ############获取x内的所有素数############
