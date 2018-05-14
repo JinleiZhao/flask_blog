@@ -25,4 +25,5 @@ manager.add_command('db', MigrateCommand)
 redis_client = FlaskRedis(app) #通过配置文件链接
 
 from app.route import views
+from app.route import file_
 from app.model.user import User

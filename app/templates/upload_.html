@@ -13,12 +13,44 @@
   </head>
   <body>
     <h3>请选择图片文件：JPG/GIF</h3>
-    <input type="file" name="file0" id="file0" />
-    <br><br><img src="" id="img0" width="120" class="hide">
+    <form action="" id="uploadFile" enctype="multipart/form-data">
+      <input name="_csrf_token" type="hidden" value="{{ csrf_token }}">
+      <input type="file" name="file" id="file" />
+      <br><br><img src="" id="img0" width="120" class="hide">
+      <p class="img_"></p>
+      <img src="" class="_img" alt="">
+      <input type="button" value="上传" class="btn">
+      <!-- <input type="submit" value="上传" class=""> -->
+    </form>
   </body>
 </html>
 <script>
-  $("#file0").change(function () {
+  $('.btn').click(function(){
+    // var file = $('#file0').val();
+    var formData = new FormData($('#uploadFile')[0]);
+    var _csrf_token_ = $('input[name=_csrf_token]').val()
+    console.log(_csrf_token_)
+    $.ajax({
+        url:'{{ url_for("upload_file") }}',
+        type:'POST',
+        data:formData,
+          // csrf_token_:csrf_token_, 
+        // async: true,
+        // cashe: false,
+        processData: false, // 不对发送的数据进行转换，（不发送对象类型）
+        contentType: false,
+        // dataType: 'json',
+        // contentType: 'application/json',
+        // data: JSON.stringify({ a: [{ b: 1, a: 1 }] }),  // 复杂的json格式ajax默认情况下无法转化，需要手动转化
+        success:function(data){
+            if(data.succ){
+                $('.img_').text(data.file);
+                $('._img').attr({"src":data.file})
+            }
+        }
+    })
+  });
+  $("#file").change(function () {
     var url = GetURL(this.files[0]);
 
     if (url) {
