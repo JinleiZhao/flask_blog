@@ -12,6 +12,10 @@
     </style>
   </head>
   <body>
+    <div>
+      <input type="text" name="num" id="">
+      <input type="button" value="验证" name="b">
+    </div>
     <h3>请选择图片文件：JPG/GIF</h3>
     <form action="" id="uploadFile" enctype="multipart/form-data">
       <input name="_csrf_token" type="hidden" value="{{ csrf_token }}">
@@ -75,4 +79,13 @@
     }
     return url;
     }
+
+   $('input[name=b]').click(function(){
+      var num_id = $('input[name=num]').val();
+      var pattern = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+      if (!pattern.test(num_id)) {
+       alert('请输入有效身份证号！');
+       return false;
+     }
+   })
 </script>

@@ -5,7 +5,7 @@ from app import app, redis_client,db
 from app.model.user import User
 
 
-@app.route('/', methods=('GET','POST'))
+@app.route('/index', methods=('GET','POST'))
 # @app.route('/index',me)
 def index():
     # path = app.config['PATH'] #get config  
