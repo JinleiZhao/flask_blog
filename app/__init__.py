@@ -1,4 +1,4 @@
-#!/home/yaya/.pyenv/plugins/python
+#!/home/yaya/.pyenv/shims/python
 #coding:utf-8
 
 import redis
@@ -41,9 +41,9 @@ def fast_cgi():
 '''
 
 @manager.option('-n','--name',dest='name',default='/tmp/myblog.sock') #将-n,--name 绑定到name这个变量上，默认为hello   
-                                                          #python manage.py run_  [-n/--name]  [tom 若不 赋值则值是默认的hello] 执行命令
+                                                          #python manage.py run_  [-n/--name]  [/home/xxx.sock 若不赋值则值是默认default] 执行命令
 def run_(name):
-    #print('name',name)
+    print('name',name)
     import os
     from flup.server.fcgi import WSGIServer
     os.umask(0o600)
