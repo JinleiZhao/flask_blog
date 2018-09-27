@@ -15,3 +15,5 @@ ACCESS_KEY_SECRET = "***************"
 ALI_BUCKET = "**"
 ENDPOINT = "***"
 OSS_PHOTO_PREFIX = 'http://' + ALI_BUCKET + '.' + ENDPOINT + '/'
+
+DEFAULT_IMG = 'static/img/201809/20/153742_1bb3ed58.png'

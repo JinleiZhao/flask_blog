@@ -1,13 +1,44 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>index</title>
-    </head>
-    <body>
-        <h1>Hello, {{ user.nickname }}!</h1>
-    </body>
-</html>
+{% extends 'base.html' %}
+{% block title %}
+<title> 简介 </title>
+{% endblock %}
+{% block content %}
+<h1>Hello, {{ username }}!</h1>
+<p>{{ redis_ }}, {{ user.gender }}, {{ user['age'] }}</p>
+
+<!-- 传递字典 items()、keys()、values()、iteritems()、iterkeys()、itervalues() -->
+{% for k,v in user.items() %}
+<p>{{ k }},{{ v }}</p>
+{% endfor %}
+
+<!-- 过滤器 -->
+<img src="{{ avatar | default(DEFAULT_IMG) }}" alt="" class="img-rounded" >
+
+<!-- 长度 -->
+<p>共有用户 {{ user | length }}({{ books | length }}) </p>
+<div class="row">
+    <div class="col-xs-6">{{ websites.baidu }}</div>
+    <div class="col-xs-6">{{ websites.google }}</div>
+</div>
+
+<p>综合运用列表和字典的模板文件</p>
+<table class="table table-hover">
+    <thead>
+        <th>书名</th>
+        <th>作者</th>
+        <th>价格</th>
+    </thead>
+    <tbody>
+        {% for book in books %}
+        <tr>
+            <td>{{ book.name }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.price }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
 <!-- <html lang="en">
 <head>
     <meta charset="UTF-8">

@@ -16,6 +16,9 @@ app.config.from_object('config') #引入配置文件
 # redis_store = FlaskRedis(app, strict=False) #redis
 db = SQLAlchemy(app)
 
+default_img = app.config['DEFAULT_IMG']
+app.jinja_env.globals['DEFAULT_IMG'] = default_img
+
 '''
 #也可以db = SQLAlchemy()        db.init_app(app)
 '''
