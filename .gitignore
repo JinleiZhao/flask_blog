@@ -1,6 +1,6 @@
-.vscode
-__pycache__
-migrations
+.vscode/
+__pycache__/
+migrations/
 *.pyc
 .python-version
 app/static/img/

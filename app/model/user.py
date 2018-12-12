@@ -1,18 +1,37 @@
 from app import db
 from sqlalchemy.schema import Sequence
+from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import event
 from sqlalchemy import DDL
 
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    users = db.relationship('User', backref='role', lazy='dynamic')
+
+    def __repr__(self):
+        return '<Role %r>' % self.name
+
+
 class User(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, index=True, nullable=False)
+    pwd = db.Column(db.Unicode(255), nullable=False)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
-    id = db.Column(db.Integer,primary_key=True) # db.Sequence('user_id_seq',start=1000),
-    name = db.Column(db.String(255), nullable=False)  # ,unique=True 则此列 不能重复，否则抛错
-    age = db.Column(db.Integer, nullable=False)
-    sex = db.Column(db.Integer, nullable=False, default=0) 
-    phone = db.Column(db.Integer, nullable=True)
-    email = db.Column(db.String(255),nullable=False)
-
+    def __repr__(self):
+        return '<User %r>' % self.username
+    
     @property
-    def set_id(self):
-        return self.id+1000
+    def passwd(self):
+        raise AttributeError('password is not a readable attribute!')
+    
+    @passwd.setter
+    def passwd(self, passwd):
+        self.pwd = generate_password_hash(passwd)
+    
+    def verify_password(self, passwd):
+        return check_password_hash(self.pwd, passwd)
+

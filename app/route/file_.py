@@ -9,7 +9,7 @@ from datetime import datetime
 from flask import Flask, request, redirect, render_template, jsonify
 from werkzeug.utils import secure_filename
 from app import app
-
+from flask import g
 
 def oss_filename(file):
     time_ = str(time.time())[:6]
@@ -54,12 +54,15 @@ def save_img(file):  #保存图片，本地/oss
 
 @app.route('/file', methods=('GET',))
 def file():
-    return render_template('upload_.html')
+    g.user = 'zhangsan'
+    print(g.user)
+    return render_template('myblog/upload_.html', user=g.user)
 
 @app.route('/upload_file', methods=('POST',))
 def upload_file():   
     # file = request.files['file']  #获取指定的file
     # print(file.filename) 
+    # print(g.user)
     file = request.files.values()   #获取所有的file 
     for f in file:
         file = f

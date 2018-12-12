@@ -1,9 +1,14 @@
 #!/home/yaya/.pyenv/plugins/python
 #coding:utf-8
-from flask import session, render_template
+from flask import session, render_template, url_for, redirect, flash
+from flask import request
 from app import app, redis_client,db
 from app.model.user import User
-
+import json
+from datetime import datetime
+from app.form.loginer import NameForm
+from app.model.user import User, Role
+from app.utils.email import send_mail
 
 @app.route('/index', methods=('GET','POST'))
 # @app.route('/index',me)
@@ -53,31 +58,77 @@ def index():
             'price': 98
         }
     ]
-    return render_template('index.html',**context, user=context, books=books)
+    p = redis_client.pipeline()
+    keys = redis_client.keys(pattern="top*")
+    # n,top_data = redis_client.scan(0, match='top_*', count=5)
+    # data = []
+    m, data = 0, []
+    while True:
+        n, top_data = redis_client.scan(m, match='top_*', count=5)
+        print(n, top_data)
+        if top_data:
+            data += top_data 
+        if n != 0:
+            m = n
+        else:
+            break
+    # dat = p.execute()
+    print(keys, data)
+    page = request.args.get('page', None)
+    if page:
+        page = eval(page)
+        print(page, type(page))
+        context.update({"page":page})
+    return render_template('myblog/index.html',**context, user=context, books=books)
     # return render_template('upload_.html')
 
 @app.route('/login<int:user_id>', methods=('POST','GET'))
 def login(user_id):
     if user_id == 1:
         user = {
-            'username': u'站长',
-            'age': 22
-        }
-        return render_template('login.html', user=user)  # 已经注册则传进去参数
-    else:
-        return render_template('login.html')  # 没有注册则直接渲染
-        
+            'username': '站长',
+            'age': 22,
+            'current_time': datetime.utcnow()  #用moment需用utc
 
-############获取x内的所有素数############
-# In [85]: def primes(x):
-#     ...:     # prepair data space
-#     ...:     plist = [0, 0] + range(2,x+1)
-#     ...:     print(plist)
-#     ...:     for i in xrange(2, x):
-#     ...:         if plist[i]: #p[0]=0 返回false
-#     ...:             print('plist[%d]'%i)
-#     ...:             print('plist1',plist[i+i::i],id(plist))
-#     ...:             plist[i+i::i] = [0] * len(plist[i+i::i])
-#                      p[4::2]       = [0 ,0 ,0 ,0]   #分别用左列表中的元素代替右边对应索引位置的值
-#     ...:             print('plist2',plist[i+i::i],id(plist))
-#     ...:     return filter(None, plist)  #func为None时，True和False通过iter来确定
+        }
+        print(datetime.utcnow())
+        return render_template('myblog/login.html', user=user)  # 已经注册则传进去参数
+    elif user_id == 2:
+        user = {
+            'username': '楼主',
+            'age': 18
+        }
+        return redirect(url_for('index', page=user))
+    else:
+        return render_template('myblog/login.html')  # 没有注册则直接渲染
+        
+@app.route('/register', methods=('GET', 'POST'))
+def register():
+    # name = None
+    form = NameForm()
+    if form.validate_on_submit():
+        user = User.query.filter(User.username==form.username.data).first()
+        if not user:
+            user = User(
+                        username=form.username.data,
+                        passwd=form.pwd.data
+                    )
+            db.session.add(user)
+            db.session.commit()
+            session['known'] = False
+        else:
+            # send_mail()  #发送email
+            session['known'] = True
+
+        session['username'] = form.username.data
+        print(session)
+        flash('Congratulation you have register success!')
+        return redirect(url_for('register'))
+    return render_template('myblog/register.html', form=form, \
+                                    name=session.get('username'),\
+                                    known=session.get('known', False))
+
+
+@app.route('/change_passwd', methods=('POST', 'GET'))
+def change_passwd():
+    pass

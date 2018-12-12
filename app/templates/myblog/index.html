@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
+{% import "macros.html" as macros %}
 {% block title %}
-<title> 简介 </title>
+    简介
 {% endblock %}
 {% block content %}
+<div class="container">
 <h1>Hello, {{ username }}!</h1>
 <p>{{ redis_ }}, {{ user.gender }}, {{ user['age'] }}</p>
-
-<!-- 传递字典 items()、keys()、values()、iteritems()、iterkeys()、itervalues() -->
+{% if page %}
+    <p> {{ page.username }} , {{ page['age'] }}</p>
+{% endif %}
+    <!-- 传递字典 items()、keys()、values()、iteritems()、iterkeys()、itervalues() -->
 {% for k,v in user.items() %}
 <p>{{ k }},{{ v }}</p>
 {% endfor %}
@@ -38,6 +42,7 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 {% endblock %}
 <!-- <html lang="en">
 <head>

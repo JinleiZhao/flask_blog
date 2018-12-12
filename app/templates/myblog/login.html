@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}
+    登录
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        {% if user %}
+        <h1>Hello, {{ user.username }}!,{{ user.age }}</h1>
+        <p>The local date and time is {{ moment(user.current_time).format('LLL') }}.</p> <!-- L ~ LLLL -->
+        <p>That was {{ moment(user.current_time).fromNow(refresh=True) }}</p>
+        {% else %}
+        <h4> <a href="login1">登录</a></h4>
+        <h4> <a href="login1">注册</a></h4>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript" src="static/js/test.js">
+    // var h = $('h1').text()
+    // console.log(h)
+</script>
+{% endblock %}
