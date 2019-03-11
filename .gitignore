@@ -4,3 +4,4 @@ migrations/
 *.pyc
 .python-version
 app/static/img/
+requirements.txt
